@@ -1,0 +1,30 @@
+version: '2'
+
+# Docker Services
+services:
+  app: 
+    image: nginxdemos/hello
+    networks:
+      - web 
+    labels:
+      traefik.enable: true
+      traefik.http.routers.nginxdemoshello.tls: true
+      traefik.http.routers.nginxdemoshello.rule: Host(`nginxdemos.traefik.me`)
+      traefik.http.routers.nginxdemoshello.tls.domains[0].main: nginxdemos.traefik.me
+      traefik.http.services.nginxdemoshello.loadbalancer.server.port: 80
+      traefik.docker.network: web
+  whoami:
+    image: containous/whoami
+    networks:
+      - web
+    labels:
+      traefik.enable: true
+      traefik.http.routers.whoami.tls: true
+      traefik.http.routers.whoami.rule: Host(`whoami.traefik.me`)
+      traefik.http.routers.whoami.tls.domains[0].main: whoami.traefik.me
+        #traefik.http.services.whoami.loadblancer.server.port: 80
+      traefik.docker.network: web
+
+# Docker Networks
+networks:
+  web:
